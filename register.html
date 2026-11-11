@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PropertyFlow — Register</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-box">
+
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9,22 9,12 15,12 15,22"/>
+        </svg>
+      </div>
+      <span class="auth-logo-text">PropertyFlow</span>
+    </div>
+
+    <div class="auth-card" id="card">
+      <h1>Create your account</h1>
+      <p class="auth-subtitle">Start managing your properties with PropertyFlow</p>
+
+      <div id="alert" class="alert alert-error" style="display:none"></div>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label" for="full-name">Full Name</label>
+          <input type="text" id="full-name" class="form-input" placeholder="Adebayo Okafor" autocomplete="name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="org-name">Organization / Company Name</label>
+          <input type="text" id="org-name" class="form-input" placeholder="Okafor Properties Ltd" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="At least 8 characters" autocomplete="new-password" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label" for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" class="form-input" placeholder="••••••••" autocomplete="new-password" required />
+        </div>
+
+        <div class="form-group" style="margin-top:20px;margin-bottom:0">
+          <button type="submit" class="btn btn-primary w-full" id="submit-btn">Create account</button>
+        </div>
+      </form>
+    </div>
+
+    <p class="auth-footer">Already have an account? <a href="index.html">Sign in</a></p>
+    <p class="auth-footer" style="margin-top:8px">Are you a tenant? <a href="tenant-signup.html">Set up your tenant account</a></p>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/auth-ui.js"></script>
+<script src="js/password-toggle.js"></script>
+<script>
+  const form = document.getElementById('register-form');
+  const submitBtn = document.getElementById('submit-btn');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hideAlert();
+
+    const fullName = document.getElementById('full-name').value.trim();
+    const organizationName = document.getElementById('org-name').value.trim();
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm-password').value;
+
+    const problem = validatePassword(password, confirm);
+    if (problem) {
+      showAlert(problem);
+      return;
+    }
+
+    setBusy(submitBtn, true, 'Creating account...');
+
+    try {
+      const data = await registerLandlord({ fullName, organizationName, email, password });
+
+      if (data.session) {
+        redirectTo('landlord/dashboard.html');
+        return;
+      }
+
+      showPanel('card', {
+        title: 'Check your email',
+        message: 'We sent a confirmation link to ' + email + '. Click it to activate your account.',
+        linkHref: 'index.html',
+        linkText: 'Back to sign in'
+      });
+    } catch (error) {
+      showAlert(error.message);
+      setBusy(submitBtn, false);
+    }
+  });
+</script>
+
+</body>
+</html>

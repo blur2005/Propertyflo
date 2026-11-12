@@ -210,3 +210,40 @@ async function updatePassword(newPassword) {
   const { error } = await sb.auth.updateUser({ password: newPassword });
   if (error) throw new Error(authMessage(error));
 }
+async function getAuthUser() {
+  const { data, error } = await sb.auth.getUser();
+  if (error || !data.user)
+    throw new Error("Your session has expired. Please sign in again.");
+  return data.user;
+}
+
+async function changePassword(currentPassword, newPassword) {
+  const authUser = await getAuthUser();
+
+  const { error: verifyError } = await sb.auth.signInWithPassword({
+    email: authUser.email,
+    password: currentPassword,
+  });
+
+  if (verifyError) {
+    const text = (verifyError.message || "").toLowerCase();
+    if (text.includes("invalid login credentials"))
+      throw new Error("Your current password is incorrect.");
+    throw new Error(authMessage(verifyError));
+  }
+
+  const { error } = await sb.auth.updateUser({ password: newPassword });
+
+  if (error) {
+    const text = (error.message || "").toLowerCase();
+    if (
+      text.includes("different from the old password") ||
+      text.includes("same as")
+    ) {
+      throw new Error("Choose a password you have not used before.");
+    }
+    throw new Error(authMessage(error));
+  }
+
+  await sb.auth.signOut({ scope: "others" });
+}

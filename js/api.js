@@ -580,3 +580,16 @@ async function getDashboardStats(orgId) {
     revenueByMonth: revenueByMonth,
   };
 }
+async function updateMyProfile(profileId, data) {
+  return run(
+    sb
+      .from("profiles")
+      .update({
+        full_name: data.full_name.trim(),
+        phone: data.phone ? data.phone.trim() : null,
+      })
+      .eq("id", profileId)
+      .select("id, full_name, phone")
+      .single(),
+  );
+}

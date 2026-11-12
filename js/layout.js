@@ -17,6 +17,7 @@ const LANDLORD_NAV = [
     href: "../landlord/announcements.html",
   },
   { label: "Reports", icon: "bar-chart", href: "../landlord/reports.html" },
+  { label: "Account", icon: "user", href: "../landlord/account.html" },
 ];
 
 const TENANT_NAV = [
@@ -25,6 +26,7 @@ const TENANT_NAV = [
   { label: "Payments", icon: "credit-card", href: "../tenant/payments.html" },
   { label: "Maintenance", icon: "tool", href: "../tenant/maintenance.html" },
   { label: "Documents", icon: "folder", href: "../tenant/documents.html" },
+  { label: "Account", icon: "user", href: "../tenant/account.html" },
 ];
 
 const SVG_ICONS = {
@@ -73,6 +75,8 @@ const SVG_ICONS = {
     '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>',
   "alert-circle":
     '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  user: '<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  lock: '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>',
 };
 
 function icon(name) {
@@ -177,6 +181,10 @@ function confirmDelete(message, onConfirm) {
 
 function renderLayout(user, pageTitle) {
   const nav = user.role === "landlord" ? LANDLORD_NAV : TENANT_NAV;
+    const accountHref =
+      user.role === "landlord"
+        ? "../landlord/account.html"
+        : "../tenant/account.html";
   const currentFile = window.location.pathname.split("/").pop();
 
   const navHtml = nav
@@ -206,10 +214,13 @@ function renderLayout(user, pageTitle) {
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-avatar">${initials(user.full_name)}</div>
+                  <a class="sidebar-user" href="${accountHref}" title="${esc(user.email || "")}">
+          <div class="sidebar-avatar">${initials(user.full_name)}</div>
           <div class="sidebar-user-info">
             <div class="sidebar-user-name">${esc(user.full_name)}</div>
             <div class="sidebar-user-role">${esc(user.role)}</div>
           </div>
+        </a>
         </div>
         <button class="btn-signout" onclick="logout()">
           ${icon("logout")} Sign out

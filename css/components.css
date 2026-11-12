@@ -744,3 +744,88 @@ input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
 }
+.account-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.account-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.account-identity-text { min-width: 0; }
+
+.account-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.account-email {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  word-break: break-all;
+}
+
+.form-input:disabled {
+  background: var(--slate-50);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.strength-bars {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.strength-bars span {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--slate-200);
+  transition: background 0.25s ease;
+}
+
+.strength[data-level="1"] .strength-bars span:nth-child(-n+1) { background: var(--red-500, #ef4444); }
+.strength[data-level="2"] .strength-bars span:nth-child(-n+2) { background: var(--amber-500, #f59e0b); }
+.strength[data-level="3"] .strength-bars span:nth-child(-n+3) { background: var(--green-500, #22c55e); }
+.strength[data-level="4"] .strength-bars span:nth-child(-n+4) { background: var(--green-600); }
+
+.strength-label {
+  min-width: 44px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+a.sidebar-user {
+  border-radius: var(--radius-lg);
+  transition: background var(--transition);
+}
+
+a.sidebar-user:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+@media (max-width: 900px) {
+  .account-grid { grid-template-columns: 1fr; }
+}
